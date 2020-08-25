@@ -2,12 +2,12 @@
 class_name = "Circle"
 
 [ScanPath.kwargs]
-center_x = -350
-center_y = -350
+center_x = -375
+center_y = -375
 z = 0
 tilt = 0
-radius = 300
-n_points = 60
+radius = 375
+n_points = 20
 
 [Scan.scanner.camera]
 module = "romiscanner.urlcam"
@@ -32,6 +32,6 @@ homing = true
 port = "/dev/ttyACM0"
 
 [Scan.metadata.workspace]
-x = [ 200, 600,]
-y = [ 200, 600,]
+x = [ 50, 800,]
+y = [ 50, 800,]
 z = [ -100, 300,]
