@@ -76,8 +76,8 @@ class Circle(Path):
             self.append(PathElement(x, y, z, pan, tilt, exact_pose=False))
 
 class Cylinder(Path):
-    def __init__(self, center_x: Length_mm, center_y: Length_mm, z_range: (Length_mm, Length_mm), n_circles=2,
-                 tilt: Deg, radius: Length_mm, n_points: int):
+    def __init__(self, center_x: Length_mm, center_y: Length_mm, z_range: (Length_mm, Length_mm),
+                 tilt: Deg, radius: Length_mm, n_points: int, n_circles=2):
         super().__init__()
         min_z, max_z = z_range
         for z_circle in range(min_z, max_z + 1, int((max_z - min_z) / (n_circles - 1))):
