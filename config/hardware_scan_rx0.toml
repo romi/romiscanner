@@ -1,0 +1,38 @@
+[ScanPath]
+class_name = "Circle"
+
+[ScanPath.kwargs]
+center_x = -350
+center_y = -350
+z = 0
+tilt = 0
+radius = 300
+n_points = 60
+
+[Scan.scanner.camera]
+#module = "romiscanner.sony"
+module = "romiscanner.gp2"
+
+#[Scan.scanner.camera.kwargs]
+#url = "http://myflashair"
+
+[Scan.scanner.gimbal]
+module = "romiscanner.blgimbal"
+
+[Scan.scanner.gimbal.kwargs]
+port = "/dev/ttyACM1"
+has_tilt = false
+zero_pan = 180
+invert_rotation = true
+
+[Scan.scanner.cnc]
+module = "romiscanner.grbl"
+
+[Scan.scanner.cnc.kwargs]
+homing = true
+port = "/dev/ttyACM0"
+
+[Scan.metadata.workspace]
+x = [ 200, 600,]
+y = [ 200, 600,]
+z = [ -100, 300,]
