@@ -28,10 +28,11 @@ invert_rotation = true
 module = "romiscanner.grbl"
 
 [Scan.scanner.cnc.kwargs]
-homing = true
 port = "/dev/ttyACM0"
+baud_rate = 115200
+homing = true
 
 [Scan.metadata.workspace]
-x = [ 50, 800,]
-y = [ 50, 800,]
-z = [ -100, 300,]
+x = [50, 800, ]
+y = [50, 800, ]
+z = [-100, 300, ]
