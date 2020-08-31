@@ -93,6 +93,12 @@ class CNC(hal.AbstractCNC):
         The position of the CNC arm along the Y-axis.
     z : int
         The position of the CNC arm along the Z-axis.
+    invert_x : bool
+        If `True`, "mirror" the coordinates direction respectively to 0.
+    invert_y : bool
+        If `True`, "mirror" the coordinates direction respectively to 0.
+    invert_z : bool
+        If `True`, "mirror" the coordinates direction respectively to 0.
 
     References
     ----------
@@ -101,7 +107,8 @@ class CNC(hal.AbstractCNC):
     """
 
     def __init__(self, port="/dev/ttyUSB0", baud_rate=115200, homing=True,
-                 x_lims=None, y_lims=None, z_lims=None):
+                 x_lims=None, y_lims=None, z_lims=None, safe_start=True,
+                 invert_x=True, invert_y=True, invert_z=True):
         """Constructor.
 
         Parameters
@@ -118,11 +125,17 @@ class CNC(hal.AbstractCNC):
             The allowed range of Y-axis positions, if `None` (default) use the settings from grbl ("$131", see GRBL_SETTINGS).
         z_lims : (int, int), optional
             The allowed range of Z-axis positions, if `None` (default) use the settings from grbl ("$132", see GRBL_SETTINGS).
+        invert_x : bool
+            If `True` (default), "mirror" the coordinates direction respectively to 0.
+        invert_y : bool
+            If `True` (default), "mirror" the coordinates direction respectively to 0.
+        invert_z : bool
+            If `True` (default), "mirror" the coordinates direction respectively to 0.
 
         Examples
         --------
         >>> from romiscanner.grbl import CNC
-        >>> cnc = CNC("/dev/ttyACM0")
+        >>> cnc = CNC("/dev/ttyACM1", x_lims=[0, 780], y_lims=[0, 790], z_lims=[0, 90])
         >>> cnc.moveto(200, 200, 50)
         >>> cnc.moveto_async(200, 200, 50)
         >>> cnc.send_cmd("$$")
@@ -135,12 +148,15 @@ class CNC(hal.AbstractCNC):
         self.x_lims = x_lims
         self.y_lims = y_lims
         self.z_lims = z_lims
+        self.invert_x = invert_x
+        self.invert_y = invert_y
+        self.invert_z = invert_z
         self.serial_port = None
         self.x = 0
         self.y = 0
         self.z = 0
         self.grbl_settings = None
-        self._start()
+        self._start(safe_start)
         atexit.register(self.stop)
 
     def _check_axes_limits(self, axe_limits, grbl_limits, axes):
@@ -151,7 +167,7 @@ class CNC(hal.AbstractCNC):
             msg += f"Should be in '{grbl_limits[0]}:{grbl_limits[1]}', but got '{axe_limits[0]}:{axe_limits[1]}'!"
             raise ValueError(msg)
 
-    def _start(self):
+    def _start(self, safe_start):
         """ Start the serial connection with the Arduino & initialize the CNC (hardware).
 
         References
@@ -173,20 +189,21 @@ class CNC(hal.AbstractCNC):
         # Use millimeters for length units:
         self.send_cmd("g21")
 
-        # Initialize axes limits with grbl settings if not set, else check given settings:
-        self.grbl_settings = self.get_grbl_settings()
-        if self.x_lims is None:
-            self.x_lims = self.grbl_settings["$130"]
-        else:
-            self._check_axes_limits(self.x_lims, [0, self.grbl_settings["$130"]], 'X')
-        if self.y_lims is None:
-            self.y_lims = self.grbl_settings["$131"]
-        else:
-            self._check_axes_limits(self.y_lims, [0, self.grbl_settings["$131"]], 'Y')
-        if self.z_lims is None:
-            self.z_lims = self.grbl_settings["$132"]
-        else:
-            self._check_axes_limits(self.z_lims, [0, self.grbl_settings["$132"]], 'Z')
+        if safe_start:
+            # Initialize axes limits with grbl settings if not set, else check given settings:
+            self.grbl_settings = self.get_grbl_settings()
+            if self.x_lims is None:
+                self.x_lims = [0, self.grbl_settings["$130"]]
+            else:
+                self._check_axes_limits(self.x_lims, [0, self.grbl_settings["$130"]], 'X')
+            if self.y_lims is None:
+                self.y_lims = [0, self.grbl_settings["$131"]]
+            else:
+                self._check_axes_limits(self.y_lims, [0, self.grbl_settings["$131"]], 'Y')
+            if self.z_lims is None:
+                self.z_lims = [0, self.grbl_settings["$132"]]
+            else:
+                self._check_axes_limits(self.z_lims, [0, self.grbl_settings["$132"]], 'Z')
 
     def stop(self):
         """ Close the serial connection."""
@@ -265,10 +282,11 @@ class CNC(hal.AbstractCNC):
         http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g0
 
         """
-        self.send_cmd("g0 x%s y%s z%s" % (int(x), int(y), int(z)))
-        self.x = int(x)
-        self.y = int(y)
-        self.z = int(z)
+        x = int(-x) if self.invert_x else int(x)
+        y = int(-y) if self.invert_y else int(y)
+        z = int(-z) if self.invert_z else int(z)
+        self.send_cmd("g0 x%s y%s z%s" % (x, y, z))
+        self.x, self.y, self.z = x, y, z
         time.sleep(0.1)  # Add a little sleep between calls
 
     def wait(self):
@@ -297,9 +315,8 @@ class CNC(hal.AbstractCNC):
         self.serial_port.reset_input_buffer()
         logger.debug("%s -> cnc" % cmd)
         self.serial_port.write((cmd + "\n").encode())
-        grbl_out = self.serial_port.readlines()
-        for out in grbl_out:
-            logger.debug("cnc -> %s" % out.strip())
+        grbl_out = self.serial_port.readline()
+        logger.debug("cnc -> %s" % grbl_out.strip())
         time.sleep(0.1)
         return grbl_out
 
@@ -323,7 +340,9 @@ class CNC(hal.AbstractCNC):
 
     def get_grbl_settings(self):
         """ Returns the grbl settings as a dictionary {'param': value}."""
-        str_settings = self.send_cmd("$$")
+        self.serial_port.reset_input_buffer()
+        self.serial_port.write(("$$" + "\n").encode())
+        str_settings = self.serial_port.readlines()
         settings = {}
         for line in str_settings:
             line = line.strip()  # remove potential leading and trailing whitespace & eol
@@ -336,6 +355,7 @@ class CNC(hal.AbstractCNC):
                 settings[param] = int(value)
             except ValueError:
                 settings[param] = float(value)
+
         return settings
 
     def print_grbl_settings(self):

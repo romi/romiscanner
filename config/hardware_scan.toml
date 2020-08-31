@@ -2,8 +2,8 @@
 class_name = "Circle"
 
 [ScanPath.kwargs]
-center_x = -375
-center_y = -375
+center_x = 375
+center_y = 375
 z = 0
 tilt = 0
 radius = 375
