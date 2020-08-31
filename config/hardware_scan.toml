@@ -21,7 +21,7 @@ module = "romiscanner.blgimbal"
 [Scan.scanner.gimbal.kwargs]
 port = "/dev/ttyACM1"
 has_tilt = false
-zero_pan = 180
+zero_pan = 0
 invert_rotation = true
 
 [Scan.scanner.cnc]

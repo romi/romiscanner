@@ -2,37 +2,42 @@
 class_name = "Circle"
 
 [ScanPath.kwargs]
-center_x = -350
-center_y = -350
+center_x = 375
+center_y = 375
 z = 0
 tilt = 0
 radius = 300
-n_points = 60
+n_points = 20
 
 [Scan.scanner.camera]
-#module = "romiscanner.sony"
-module = "romiscanner.gp2"
+module = "romiscanner.sony"
+#module = "romiscanner.gp2"
 
-#[Scan.scanner.camera.kwargs]
+[Scan.scanner.camera.kwargs]
 #url = "http://myflashair"
+device_ip = "192.168.122.1"
+api_port = "10000"
+postview = true
+use_flashair = false
 
 [Scan.scanner.gimbal]
 module = "romiscanner.blgimbal"
 
 [Scan.scanner.gimbal.kwargs]
-port = "/dev/ttyACM1"
+port = "/dev/ttyACM2"
 has_tilt = false
-zero_pan = 180
+zero_pan = 0
 invert_rotation = true
 
 [Scan.scanner.cnc]
 module = "romiscanner.grbl"
 
 [Scan.scanner.cnc.kwargs]
-homing = true
 port = "/dev/ttyACM0"
+baud_rate = 115200
+homing = true
 
 [Scan.metadata.workspace]
-x = [ 200, 600,]
-y = [ 200, 600,]
-z = [ -100, 300,]
+x = [200, 600, ]
+y = [200, 600, ]
+z = [-100, 300, ]
