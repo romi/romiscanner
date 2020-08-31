@@ -57,7 +57,7 @@ class Scanner(AbstractScanner):
             self.cnc.wait()
             self.gimbal.wait()
         else:
-            self.cnc.moveto(x, y, z)
+            self.cnc.moveto(pose.x, pose.y, pose.z)
             self.gimbal.moveto(pose.pan, pose.tilt)
         time.sleep(self.waiting_time)
 
