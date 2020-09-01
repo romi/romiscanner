@@ -33,6 +33,7 @@ baud_rate = 115200
 homing = true
 
 [Scan.metadata.workspace]
+# TODO: To remove, should not be "hardcoded" in metadata but retreived from CNC configuration:
 x = [50, 800, ]
 y = [50, 800, ]
 z = [-100, 300, ]

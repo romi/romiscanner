@@ -37,7 +37,29 @@ port = "/dev/ttyACM0"
 baud_rate = 115200
 homing = true
 
+[Scan.metadata.object]
+species = "Arabidopsis thaliana"  # the species of the biological object analysed;
+seed_stock = "Col-0"  # an identifier of the seed stock used;
+plant_id = "romi_demo_1"  # an identifier for the plant;
+growth_environment = "Lyon-Indoor"  # location of the growth environment;
+growth_conditions = "LD+SD"  # growth condition used, eg: "LD", "SD", "LD+SD";
+treatment = "None"  # specific treatment applied, if any, eg: "Auxin 1mM";
+DAG = 40  #Days After Germination or age of the plant in days, eg: 40;
+sample = "main stem"  # part of the plant used, if any, eg: "main stem";
+experiment_id = "romi_demo_2020"  # an identifier for the experiment, eg: "dry plant";
+dataset_id = "romi_demo_1"  # the dataset identifier for the biological dataset, eg: 12;
+
+[Scan.metadata.hardware]
+frame = "30profile v1"  # scanner frame type and version, eg: "30profile v1";
+X_motor = "X-Carve NEMA23"  # type of motor used for the X axis, eg: "X-Carve NEMA23";
+Y_motor = "X-Carve NEMA23"  # type of motor used for the Y axis, eg: "X-Carve NEMA23";
+Z_motor = "X-Carve NEMA23"  # type of motor used for the Z axis, eg: "X-Carve NEMA23";
+pan_motor = "iPower Motor GM4108H-120T Brushless Gimbal Motor"  # type of motor used for the camera pan axis, eg: "Dynamixel";
+tilt_motor = "None"  # type of motor used for the camera tilt axis, eg: "Gimball";
+sensor = "Sony RX0"  # type of sensor used during acquisition, eg: "Sony alpha";
+
 [Scan.metadata.workspace]
+# TODO: To remove, should not be "hardcoded" in metadata but retreived from CNC configuration:
 x = [200, 600, ]
 y = [200, 600, ]
 z = [-100, 300, ]
