@@ -19,6 +19,7 @@ device_ip = "192.168.122.1"
 api_port = "10000"
 postview = true
 use_flashair = false
+rotation = 270
 
 [Scan.scanner.gimbal]
 module = "romiscanner.blgimbal"

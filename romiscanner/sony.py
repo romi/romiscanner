@@ -31,6 +31,9 @@ import subprocess
 import numpy as np
 from io import BytesIO
 from enum import Enum
+
+from PIL import Image
+
 from . import hal, error
 from .hal import DataItem
 import tempfile
@@ -54,13 +57,13 @@ class SonyCamAPI(object):
 
     def api_call(self, endpoint, method, params=[], version='1.0'):
         request_result = requests.post(self.api_url + endpoint,
-              data=json.dumps({
-                  'method': method,
-                  'params': params,
-                  'id':1,
-                  'version': version
-              }),
-              timeout=self.timeout)
+                                       data=json.dumps({
+                                           'method': method,
+                                           'params': params,
+                                           'id': 1,
+                                           'version': version
+                                       }),
+                                       timeout=self.timeout)
         res = json.loads(request_result.content.decode('utf-8'))
         if 'error' in res:
             err = res['error']
@@ -68,7 +71,7 @@ class SonyCamAPI(object):
             Failed camera request.
             Exception code: %d
             Description: %s
-            '''%(err[0], err[1]))
+            ''' % (err[0], err[1]))
         if 'result' in res:
             return res['result']
         if 'results' in res:
@@ -103,15 +106,15 @@ class SonyCamAPI(object):
         return self.api_call("camera", "getStorageInformation")[0]
 
     def get_source_list(self):
-        return self.api_call("avContent", "getSourceList", [{"scheme" : "storage"}])[0]
+        return self.api_call("avContent", "getSourceList", [{"scheme": "storage"}])[0]
 
     def get_content_list(self, count, uri, stIdx=0, view="flat", sort="descending"):
         return self.api_call("avContent", "getContentList", [{
-            "uri" : uri,
-            "stIdx" : stIdx,
-            "cnt" : count,
-            "view" : view,
-            "sort" : sort}], version="1.3")[0]
+            "uri": uri,
+            "stIdx": stIdx,
+            "cnt": count,
+            "view": view,
+            "sort": sort}], version="1.3")[0]
 
     def get_camera_status(self):
         events = self.get_event()
@@ -131,7 +134,7 @@ class SonyCamAPI(object):
 
     def start_shoot_mode(self):
         if ('setCameraFunction' in self.supported_methods and
-            'getCameraFunction' in self.supported_methods):
+                'getCameraFunction' in self.supported_methods):
             camera_function = self.get_camera_function()
             if camera_function != CAMERA_FUNCTION_SHOOT:
                 self.set_camera_function(CAMERA_FUNCTION_SHOOT)
@@ -154,10 +157,9 @@ class SonyCamAPI(object):
         if 'FocusMode' in params:
             self.api_call('camera', 'setFocusMode', [params['FocusMode']])
 
-
     def start_transfer_mode(self):
         if ('setCameraFunction' in self.supported_methods and
-            'getCameraFunction' in self.supported_methods):
+                'getCameraFunction' in self.supported_methods):
             camera_function = self.get_camera_function()
             if camera_function != CAMERA_FUNCTION_TRANSFER:
                 self.set_camera_function(CAMERA_FUNCTION_TRANSFER)
@@ -205,18 +207,18 @@ class FlashAirAPI(object):
         self.commands_format = "http://%s/command.cgi?%s"
         self.delete_format = "http://%s/upload.cgi?DEL=%s"
         self.path_format = "http://%s%s"
-        requests.get(self.path_format%(self.host, "/"))
+        requests.get(self.path_format % (self.host, "/"))
 
     def format_datetime(self, date, time):
-        return date+time #TODO
+        return date + time  # TODO
 
     def format_attribute(self, attribute):
-        return attribute #TODO
+        return attribute  # TODO
 
     def get_file_list(self, path):
-        res = requests.get(self.commands_format%(self.host, "op=100&DIR=%s"%path))
+        res = requests.get(self.commands_format % (self.host, "op=100&DIR=%s" % path))
         res = res.content.split()
-        #print(res)
+        # print(res)
         if res[0] != b'WLANSD_FILELIST':
             raise FlashAirAPIError("Could not retrieve file list")
 
@@ -226,11 +228,11 @@ class FlashAirAPI(object):
             datetime = self.format_datetime(date, time)
             attribute = self.format_attribute(attribute)
             files.append({
-                "directory" : directory,
-                "filename" : fname,
-                "size" : size,
+                "directory": directory,
+                "filename": fname,
+                "size": size,
                 "attribute": attribute,
-                "datetime" : datetime,
+                "datetime": datetime,
             })
         return files
 
@@ -238,53 +240,71 @@ class FlashAirAPI(object):
         dir_list = self.get_file_list('/DCIM')
         files = []
         for x in dir_list:
-            if x['filename'] != '100__TSB': #Ignore file from SD card
+            if x['filename'] != '100__TSB':  # Ignore file from SD card
                 files.extend(self.get_file_list('/DCIM/' + x['filename']))
 
-        files.sort(key = lambda x: x['filename'], reverse=True) #TODO: sort by date
+        files.sort(key=lambda x: x['filename'], reverse=True)  # TODO: sort by date
         images = []
         fnames = []
         for i in range(count):
             if i >= len(files):
                 break
-            path = '%s/%s'%(files[i]['directory'],files[i]['filename'])
-            url = self.path_format%(self.host, path)
+            path = '%s/%s' % (files[i]['directory'], files[i]['filename'])
+            url = self.path_format % (self.host, path)
             print(url)
             new_image = imageio.imread(BytesIO(requests.get(url).content), format='jpg')
-            if not(tmpdir): images.append(new_image)
+            if not (tmpdir):
+                images.append(new_image)
             else:
-                #print(files[i]['filename'])
-                fname =os.path.join(tmpdir,files[i]['filename'])
+                # print(files[i]['filename'])
+                fname = os.path.join(tmpdir, files[i]['filename'])
                 imageio.imwrite(fname, new_image)
                 fnames.append(fname)
 
-        if not(tmpdir):
+        if not (tmpdir):
             return images[::-1]
         else:
             return fnames
 
     def delete_all(self):
-        files=[]
+        files = []
         dir_list = self.get_file_list('/DCIM')
         for x in dir_list:
-            if x['filename'] != '100__TSB': #Ignore file from SD card
+            if x['filename'] != '100__TSB':  # Ignore file from SD card
                 files.extend(self.get_file_list('/DCIM/' + x['filename']))
 
         for f in files:
-            requests.get(self.delete_format%(self.host,f['directory']+'/'+f['filename']))
+            requests.get(self.delete_format % (self.host, f['directory'] + '/' + f['filename']))
 
 class Camera(hal.AbstractCamera):
-    '''
+    """
     Sony Remote Control API.
-    '''
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from romiscanner.sony import Camera
+    >>> cam = Camera('192.168.122.1', '10000', postview=True, rotation=0)
+    >>> img = cam.grab(0)
+    >>> arr = img.channels['rgb'].data
+    >>> arr.shape
+
+    >>> cam = Camera('192.168.122.1', '10000', postview=True, rotation=270)
+    >>> img = cam.grab(0)
+    >>> arr = np.array(img.channels['rgb'].data)
+    >>> arr.shape
+
+    """
+
     def __init__(self, device_ip: str,
-                api_port: str,
-                timeout: Time_s=10,
-                postview: bool=False,
-                use_adb: bool=False,
-                use_flashair: bool=False,
-                flashair_host: str=None,
-                camera_params: dict=None):
+                 api_port: str,
+                 timeout: Time_s = 10,
+                 postview: bool = False,
+                 use_adb: bool = False,
+                 use_flashair: bool = False,
+                 flashair_host: str = None,
+                 camera_params: dict = None,
+                 rotation: int = 0):
 
         self.sony_cam = SonyCamAPI(device_ip, api_port, timeout=timeout)
         self.postview = postview
@@ -298,6 +318,7 @@ class Camera(hal.AbstractCamera):
             self.flashair = FlashAirAPI(flashair_host)
 
         self.camera_params = camera_params
+        self.rotation = rotation  # degrees counter-clockwise
         self.start()
 
     def start(self):
@@ -309,19 +330,19 @@ class Camera(hal.AbstractCamera):
     def channels(self):
         return ['rgb']
 
-    def grab(self, idx: int, metadata: dict=None) -> DataItem:
+    def grab(self, idx: int, metadata: dict = None) -> DataItem:
         data_item = DataItem(idx, metadata)
         res = self.sony_cam.take_picture()
         url = res[0]
-        if self.postview: # Download image from postview
+        if self.postview:  # Download image from postview
             data = imageio.imread(BytesIO(requests.get(url).content))
-        elif self.use_adb: # Download using android debug
+        elif self.use_adb:  # Download using android debug
             images = self.sony_cam.adb_transfer_pictures(count=1)
             data = images[0]
-        elif self.use_flashair: # Download on wifi sd card
+        elif self.use_flashair:  # Download on wifi sd card
             images = self.flashair.transfer_latest_pictures(count=1)
             data = images[0]
-        else: # Download using file transfer mode (not available on all cameras)
+        else:  # Download using file transfer mode (not available on all cameras)
             self.sony_cam.start_transfer_mode()
             uri = self.sony_cam.get_source_list()[0]['source']
             content_list = self.sony_cam.get_content_list(count=1, uri=uri)
@@ -330,6 +351,10 @@ class Camera(hal.AbstractCamera):
             url = content['url']
             data = imageio.imread(BytesIO(requests.get(url).content))
             self.sony_cam.start_shoot_mode()
+
+        if self.rotation != 0:
+            data = Image.fromarray(data)
+            data = data.rotate(self.rotation)
 
         data_item.add_channel('rgb', data)
         return data_item
