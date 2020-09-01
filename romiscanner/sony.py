@@ -354,7 +354,7 @@ class Camera(hal.AbstractCamera):
 
         if self.rotation != 0:
             data = Image.fromarray(data)
-            data = data.rotate(self.rotation)
+            data = np.array(data.rotate(self.rotation))
 
         data_item.add_channel('rgb', data)
         return data_item
