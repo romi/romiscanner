@@ -97,12 +97,14 @@ class Line(Path):
         for i in range(n_points):
             self.append(PathElement(x=(1 - i / (n_points - 1)) * x_0 + (i / (n_points - 1)) * x_1,
                                     y=(1 - i / (n_points - 1)) * y_0 + (i / (n_points - 1)) * y_1,
-                                    z=(1 - i / (n_points - 1)) * z_0 + (i / (n_points - 1)) * z_1),
-                                    pan=pan, tilt=tilt, exact_pose=True)
+                                    z=(1 - i / (n_points - 1)) * z_0 + (i / (n_points - 1)) * z_1,
+                                    pan=pan, tilt=tilt, exact_pose=True))
 
 class CalibrationScan(Path):
     def __init__(self, path: Path, n_points_line: int):
+        super().__init__()
         el0 = path[0]
         el1 = path[len(path) // 4 - 1]
-        self = Line(el0.x, el0.y, el0.z, el0.x, el1.y, el0.z, el0.pan, el0.tilt)
+        self.extend(Line(el0.x, el0.y, el0.z, el0.x, el1.y, el0.z, el0.pan, el0.tilt, n_points_line))
+        self.extend(Line(el0.x, el0.y, el0.z, el1.x, el0.y, el0.z, el0.pan, el0.tilt, n_points_line))
         self.extend(path)
