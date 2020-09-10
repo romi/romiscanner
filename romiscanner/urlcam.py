@@ -38,12 +38,16 @@ class Camera(hal.AbstractCamera):
 
     Examples
     --------
+    >>> from PIL import Image
     >>> from romiscanner.urlcam import Camera
     >>> url = "http://192.168.0.1:8080"
     >>> cam = Camera(url)
     >>> img = cam.grab("img_001")
     >>> arr = img.channel("rgb").data
     >>> arr.shape
+
+    >>> image = Image.fromarray(arr)
+    >>> image.show()
 
     """
 
@@ -61,7 +65,7 @@ class Camera(hal.AbstractCamera):
         #   Proper adherence to the HTTP protocol must be used when writing to this stream in order to achieve successful interoperation with HTTP clients.
         #   Changed in version 3.6: This is an io.BufferedIOBase stream.
         # data = imageio.imread(BytesIO(requests.get(self.url+"scan.jpg").content))
-        _ = requests.get(self.url + "/scan.jpg")  # update the picture
+        # _ = requests.get(self.url + "/scan.jpg")  # update the picture
         data = imageio.imread(self.url + "/scan.jpg")  # download it
         data_item.add_channel(self.channels()[0], data)
         return data_item
