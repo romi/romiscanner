@@ -35,13 +35,27 @@ from romiscanner.configs.lpy import VirtualPlantConfig
 
 
 class VirtualPlant(RomiTask):
+    """Task generating a virtual plant from an LPY model.
+
+    Attributes
+    ----------
+    upstream_task : LpyFileset
+        ???
+    lpy_file_id : str
+        Name of the LPY file used as model.
+    metadata : dict
+        Dictionary of metadata to use with the model.
+    lpy_globals : dict
+        Global LPY variables used by `lpy.Lsystem()` method.
+    """
     upstream_task = LpyFileset
     lpy_file_id = luigi.Parameter()
     metadata = luigi.ListParameter(default=["angles", "internodes"])
     lpy_globals = luigi.DictParameter(default=
-        { "SEED" : random.randint(0, 100000)}) #by default randomize lpy seed
+                                      {"SEED": random.randint(0, 100000)})  # by default randomize lpy seed
 
     def run(self):
+        """Generates the virtual plant."""
         from openalea import lpy
         from openalea.plantgl import all
 

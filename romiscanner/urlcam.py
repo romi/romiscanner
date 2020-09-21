@@ -33,28 +33,55 @@ class Camera(hal.AbstractCamera):
 
     Image is served as `$url/scan.jpg`.
 
-    Examples
-    --------
-    >>> from PIL import Image
-    >>> from romiscanner.urlcam import Camera
-    >>> url = "http://192.168.0.1:8080"
-    >>> cam = Camera(url)
-    >>> img = cam.grab("img_001")
-    >>> arr = img.channel("rgb").data
-    >>> arr.shape
+    Examples:
+        This is me trying to create an example:
 
-    >>> image = Image.fromarray(arr)
-    >>> image.show()
+        >>> from PIL import Image
+        >>> from romiscanner.urlcam import Camera
+        >>> url = "http://192.168.0.1:8080"
+        >>> cam = Camera(url)
+        >>> img = cam.grab("img_001")
+        >>> arr = img.channel("rgb").data
+        >>> arr.shape
+
+        >>> image = Image.fromarray(arr)
+        >>> image.show()
 
     """
 
     def __init__(self, url):
+        """
+
+        Args:
+            url (str): URL of the camera.
+        """
         self.url = url
 
     def channels(self):
         return ["rgb"]
 
-    def grab(self, idx: int, metadata: dict = None):
+    def grab(self, idx, metadata = None):
+        """Grab a picture from the camera.
+
+        Args:
+            idx (int): Id of the `hal.DataItem` to create
+            metadata (dict): Dictionary of metadata associated to the picture. OPTIONAL.
+
+        Returns:
+            hal.DataItem: The image data.
+
+        Examples:
+            This is me trying to create an example:
+
+            >>> from PIL import Image
+            >>> from romiscanner.urlcam import Camera
+            >>> url = "http://192.168.0.1:8080"
+            >>> cam = Camera(url)
+            >>> img = cam.grab("img_001")
+            >>> arr = img.channel("rgb").data
+            >>> arr.shape
+
+        """
         data_item = hal.DataItem(idx, metadata)
         # https://docs.python.org/3/library/http.server.html#http.server.BaseHTTPRequestHandler.wfile
         # wfile:

@@ -24,26 +24,26 @@
 
 import atexit
 import json
-import random
-import subprocess
 import os
-import signal
-import psutil
-import atexit
-import time
-import requests
-import imageio
-from io import BytesIO
-import numpy as np
-from typing import List
+import random
+import socket
+import subprocess
 import tempfile
+import time
+from io import BytesIO
+from typing import List
 
-from romidata.db import Fileset, File
-
-from romiscanner.hal import DataItem, AbstractScanner
-from romiscanner import path
+import imageio
+import numpy as np
+import psutil
+import requests
 from romidata import io
+from romidata.db import File
+from romiscanner import path
+from romiscanner.hal import DataItem, AbstractScanner
+
 from .log import logger
+
 
 
 def check_port(port: str):
