@@ -26,4 +26,21 @@ class Error(Exception):
     """Base class for exceptions in this module."""
     def __init__(self, message):
         self.message = message
-        
+
+
+class SonyCamError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
+class FlashAirAPIError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
+class ScannerError(Exception):
+    pass
+
+
+class PathError(ScannerError):
+    pass

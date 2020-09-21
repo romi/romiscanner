@@ -30,21 +30,17 @@ import json
 import subprocess
 import numpy as np
 from io import BytesIO
-from enum import Enum
 
 from PIL import Image
+from romiscanner.error import SonyCamError, FlashAirAPIError
 
-from . import hal, error
+from . import hal
 from .hal import DataItem
-import tempfile
 from .units import *
 
 CAMERA_FUNCTION_SHOOT = 'Remote Shooting'
 CAMERA_FUNCTION_TRANSFER = 'Contents Transfer'
 
-class SonyCamError(Exception):
-    def __init__(self, message):
-        self.message = message
 
 class SonyCamAPI(object):
     def __init__(self, device_ip, api_port, timeout=2):
@@ -197,9 +193,6 @@ class SonyCamAPI(object):
             print(f)
         return images
 
-class FlashAirAPIError(Exception):
-    def __init__(self, message):
-        self.message = message
 
 class FlashAirAPI(object):
     def __init__(self, host):

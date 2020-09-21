@@ -22,7 +22,6 @@
 # License along with romiscanner.  If not, see
 # <https://www.gnu.org/licenses/>.
 
-import os
 from abc import ABC, ABCMeta, abstractmethod
 import numpy as np
 
@@ -35,11 +34,6 @@ import logging
 
 logger = logging.getLogger("romiscanner")
 
-class ScannerError(Exception):
-    pass
-
-class PathError(ScannerError):
-    pass
 
 class ChannelData():
     def __init__(self, name: str, data: np.array, idx: int):
