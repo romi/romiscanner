@@ -35,15 +35,15 @@ class Pose(object):
         """
         Parameters
         ----------
-        x : length_mm, optional
+        x : romiscanner.units.length_mm, optional
             Relative distance to the origin along the x-axis.
-        y : length_mm, optional
+        y : romiscanner.units.length_mm, optional
             Relative distance to the origin along the y-axis.
-        z : length_mm, optional
+        z : romiscanner.units.length_mm, optional
             Relative distance to the origin along the z-axis.
-        pan : deg, optional
+        pan : romiscanner.units.deg, optional
             Relative rotation to the origin along the xy-plane.
-        tilt : deg, optional
+        tilt : romiscanner.units.deg, optional
             Relative rotation to the origin along the xy-plane.
         """
         self.x = x
@@ -71,15 +71,15 @@ class PathElement(Pose):
         """
         Parameters
         ----------
-        x : length_mm, optional
+        x : romiscanner.units.length_mm, optional
             Relative distance, in millimeters, to the origin along the x-axis.
-        y : length_mm, optional
+        y : romiscanner.units.length_mm, optional
             Relative distance, in millimeters, to the origin along the y-axis.
-        z : length_mm, optional
+        z : romiscanner.units.length_mm, optional
             Relative distance, in millimeters, to the origin along the z-axis.
-        pan : deg, optional
+        pan : romiscanner.units.deg, optional
             Relative rotation, in degrees, to the origin along the xy-plane.
-        tilt : deg, optional
+        tilt : romiscanner.units.deg, optional
             Relative rotation, in degrees, to the origin along the xy-plane.
         exact_pose : bool, optional
             If ``True``, the above parameter values are exact, else they are approximations.
@@ -167,16 +167,16 @@ class Circle(Path):
         """
         Parameters
         ----------
-        center_x : length_mm
+        center_x : romiscanner.units.length_mm
             X-axis position, in millimeters, of the circle's center, relative to the origin.
-        center_y : length_mm
+        center_y : romiscanner.units.length_mm
             Y-axis position, in millimeters, of the circle's center, relative to the origin.
-        z : length_mm
+        z : romiscanner.units.length_mm
             Height at which to make the circle.
-        tilt : deg or list(deg)
+        tilt : romiscanner.units.deg or list(romiscanner.units.deg)
             Camera tilt(s), in degrees, to use for this circle.
             If an iterable is given, performs more than one camera acquisition at same xyz position.
-        radius : length_mm
+        radius : romiscanner.units.length_mm
             Radius, in millimeters, of the circular path to create.
         n_points : int
             Number of points (``PathElement``) used to generate the circular path.
@@ -220,16 +220,16 @@ class Cylinder(Path):
         """
         Parameters
         ----------
-        center_x : length_mm
+        center_x : romiscanner.units.length_mm
             X-axis position, in millimeters, of the circle's center, relative to the origin.
-        center_y : length_mm
+        center_y : romiscanner.units.length_mm
             Y-axis position, in millimeters, of the circle's center, relative to the origin.
-        z_range : (length_mm, length_mm)
+        z_range : (romiscanner.units.length_mm, romiscanner.units.length_mm)
             Height range, in millimeters, at which to make the cylinder.
-        tilt : deg or list(deg)
+        tilt : romiscanner.units.deg or list(romiscanner.units.deg)
             Camera tilt(s), in degrees, to use for this circle.
             If an iterable is given, performs more than one camera acquisition at same xyz position.
-        radius : length_mm
+        radius : romiscanner.units.length_mm
             Radius of the circular path to create.
         n_points : int
             Number of points (``PathElement``) used to generate the circular path.
@@ -251,9 +251,9 @@ def line_1d(start, stop, n_points):
 
     Parameters
     ----------
-    start : length_mm
+    start : romiscanner.units.length_mm
         Line starting position, in millimeters.
-    stop : length_mm
+    stop : romiscanner.units.length_mm
         Line ending position, in millimeters.
     n_points : int
         Number of points used to create the line of points.
@@ -272,17 +272,17 @@ def line3d(x_0, y_0, z_0, x_1, y_1, z_1, n_points):
 
     Parameters
     ----------
-    x_0 : length_mm
+    x_0 : romiscanner.units.length_mm
         Line starting position, in millimeters, for the x-axis.
-    y_0 : length_mm
+    y_0 : romiscanner.units.length_mm
         Line starting position, in millimeters, for the y-axis.
-    z_0 : length_mm
+    z_0 : romiscanner.units.length_mm
         Line starting position, in millimeters, for the z-axis.
-    x_1 : length_mm
+    x_1 : romiscanner.units.length_mm
         Line ending position, in millimeters, for the x-axis.
-    y_1 : length_mm
+    y_1 : romiscanner.units.length_mm
         Line ending position, in millimeters, for the y-axis.
-    z_1 : length_mm
+    z_1 : romiscanner.units.length_mm
         Line ending position, in millimeters, for the z-axis.
     n_points : int
         Number of points used to create the linear path.
@@ -319,21 +319,21 @@ class Line(Path):
         """
         Parameters
         ----------
-        x_0 : length_mm
+        x_0 : romiscanner.units.length_mm
             Line starting position, in millimeters for the x-axis.
-        y_0 : length_mm
+        y_0 : romiscanner.units.length_mm
             Line starting position, in millimeters for the y-axis.
-        z_0 : length_mm
+        z_0 : romiscanner.units.length_mm
             Line starting position, in millimeters for the z-axis.
-        x_1 : length_mm
+        x_1 : romiscanner.units.length_mm
             Line ending position, in millimeters for the x-axis.
-        y_1 : length_mm
+        y_1 : romiscanner.units.length_mm
             Line ending position, in millimeters for the y-axis.
-        z_1 : length_mm
+        z_1 : romiscanner.units.length_mm
             Line ending position, in millimeters for the z-axis.
-        pan : deg
+        pan : romiscanner.units.deg
             Camera pan value, in degrees, to use for the linear path.
-        tilt : deg or list(deg)
+        tilt : romiscanner.units.deg or list(romiscanner.units.deg)
             Camera tilt(s), in degrees, to use for this circle.
             If an iterable is given, performs more than one camera acquisition at same xyz position.
         n_points : int
