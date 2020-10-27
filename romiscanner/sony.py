@@ -291,7 +291,7 @@ class Camera(hal.AbstractCamera):
 
     def __init__(self, device_ip: str,
                  api_port: str,
-                 timeout: Time_s = 10,
+                 timeout: time_s = 10,
                  postview: bool = False,
                  use_adb: bool = False,
                  use_flashair: bool = False,

@@ -65,11 +65,11 @@ class AbstractCNC(metaclass=ABCMeta):
         pass
 
     @abstractmethod    
-    def get_position(self) -> Tuple[Length_mm, Length_mm, Length_mm]:
+    def get_position(self) -> Tuple[length_mm, length_mm, length_mm]:
         pass
 
     @abstractmethod    
-    def moveto(self, x: Length_mm, y: Length_mm, z: Length_mm) -> None:
+    def moveto(self, x: length_mm, y: length_mm, z: length_mm) -> None:
         pass
 
     @abstractmethod    
@@ -77,7 +77,7 @@ class AbstractCNC(metaclass=ABCMeta):
         pass
 
     @abstractmethod    
-    def moveto_async(self, x: Length_mm, y: Length_mm, z: Length_mm) -> None:
+    def moveto_async(self, x: length_mm, y: length_mm, z: length_mm) -> None:
         pass
 
     @abstractmethod    
@@ -90,11 +90,11 @@ class AbstractGimbal(ABC):
         pass
 
     @abstractmethod
-    def get_position(self) -> Tuple[Deg, Deg]:
+    def get_position(self) -> Tuple[deg, deg]:
         pass
 
     @abstractmethod
-    def moveto(self, pan: Deg, tilt: Deg) -> None:
+    def moveto(self, pan: deg, tilt: deg) -> None:
         pass
 
     @abstractmethod
@@ -102,7 +102,7 @@ class AbstractGimbal(ABC):
         pass
 
     @abstractmethod
-    def moveto_async(self, pan: Deg, tilt: Deg) -> None:
+    def moveto_async(self, pan: deg, tilt: deg) -> None:
         pass
 
     @abstractmethod

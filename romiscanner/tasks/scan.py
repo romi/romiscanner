@@ -121,5 +121,5 @@ class CalibrationScan(Scan):
     def run(self):
         path = Scan().get_path()
         path_module = importlib.import_module(ScanPath().module)
-        calibration_path = getattr(path_module, "CalibrationScan")(path, self.n_points_line)
+        calibration_path = getattr(path_module, "CalibrationPath")(path, self.n_points_line)
         Scan().run(path=calibration_path)

@@ -24,8 +24,8 @@
 
 from typing import NewType
 
-Deg = NewType("Deg", float)
-Rad = NewType("Rad", float)
-Length_mm= NewType("Length_mm", float)
-Velocity_mm_p_s= NewType("Velocity_mm_p_s", float)
-Time_s = NewType("Time_s", float)
+deg = NewType("deg", float)
+rad = NewType("rad", float)
+length_mm= NewType("length_mm", float)
+velocity_mm_p_s= NewType("velocity_mm_p_s", float)
+time_s = NewType("time_s", float)
